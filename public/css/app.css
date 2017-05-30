@@ -55,6 +55,10 @@ section#rekni p {
 	padding: 0 15px;
 }
 
+#youtubePlayer {
+	display: none;
+}
+
 section.koldagroup {
 	justify-content: center;
 }

@@ -102,6 +102,10 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 				initYoutubePlayer();
 			}
 
+			var redirectToTarget = function() {
+				location.href = 'https://www.kolarikovi.cz/';
+			}
+
 			var initYoutubePlayer = function() {
 
 				//global callback
@@ -122,15 +126,14 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 			}
 
 			var showYoutubePlayer = function (videoId) {
-				body.querySelector('p').style.display = 'none';
 				var dimensions = getDimensions(1280,720);
 				player = new YT.Player('youtubePlayer', {
 					width: dimensions.width,
 					height: dimensions.height,
 					videoId: videoId,
 					events: {
-						//'onReady': onPlayerReady,
-						//'onStateChange': onPlayerStateChange
+						onReady: function (){setTimeout(startPrefetching, 10000)},
+						onStateChange: onPlayerStateChange
 					},
 					playerVars: {
 						autoplay: true,
@@ -142,11 +145,22 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 				window.addEventListener('resize', function() {
 					console.log("resize");
 					var dimensions = getDimensions(1280,720);
-					var playerEl = document.querySelector('#youtubePlayer');
+					var playerEl = body.querySelector('#youtubePlayer');
 					playerEl.width = dimensions.width;
 					playerEl.height = dimensions.height;
 				});
+			}
 
+			var onPlayerStateChange = function(event) {
+				if(event.data === YT.PlayerState.PLAYING) {
+					body.querySelector('p').style.display = 'none';
+					body.querySelector('#youtubePlayer').style.display = 'block';
+				}
+				if(event.data === YT.PlayerState.ENDED) {
+					body.querySelector('p').style.display = 'block';
+					body.querySelector('#youtubePlayer').style.display = 'none';
+					redirectToTarget();
+				}
 			}
 
 			var getDimensions = function (baseWidth, baseHeight) {
@@ -164,6 +178,37 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 					width: width,
 					height: height,
 				};
+			}
+
+			var startPrefetching = function() {
+				var dnss = [
+					'www.kolarikovi.cz',
+					'www.kolarik.cz',
+					'www.kolarikova.cz',
+				];
+				var urls = [
+					'https://www.kolarikovi.cz/js/init.js',
+					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-app.js',
+					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-auth.js',
+					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-database.js',
+					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-storage.js',
+					'https://www.kolarikovi.cz/__/firebase/init.js',
+					'https://www.kolarikovi.cz/js/app.js',
+					'https://www.kolarikovi.cz/css/app.css'
+				];
+
+				for(i in dnss) {
+					var tag = document.createElement('link');
+					tag.rel = 'dns-prefetch';
+					tag.href = dnss[i];
+					document.head.appendChild(tag);
+				}
+				for(i in urls) {
+					var tag = document.createElement('link');
+					tag.rel = 'prefetch';
+					tag.href = urls[i];
+					document.head.appendChild(tag);
+				}
 			}
 
 			init();
