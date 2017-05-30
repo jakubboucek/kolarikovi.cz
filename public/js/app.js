@@ -1,49 +1,82 @@
 Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').install();
 
 (function(){
+	app.data = null;
+	app.module = null;
 
-	var db = firebase.database();
-	var configRef = db.ref('config');
-	config = null;
-	configRef.once('value', function(configSnapshot){
-		config = configSnapshot.val();
-		app.loadedModules.push('config');
-	});
-
-	firebase.auth().onAuthStateChanged(function(user) {
-		if (user) {
-			document.getElementById('logged-out').style.display = 'none';
-			document.getElementById('logged-in').style.display = 'block';
-			var userRef = db.ref('users/' + user.uid);
-			userRef.once('value', function(userSnapshot){
-				var val = userSnapshot.val()
-				if(!val) {
-					userRef.set({
-						name: user.displayName,
-						email: user.email,
-						photoURL: user.photoURL,
-					});
-				}
-
-			}, function(e){console.log(e)});
-		} else {
-			document.getElementById('logged-out').style.display = 'block';
-			document.getElementById('logged-in').style.display = 'none';
-		}
-		app.loadedModules.push('auth');
+	// Init
+	app.loadedModules.registerCallback(['app'], function(){
+		app.module = new app.modules[app.moduleName](
+			app.moduleBody
+		);
+		fetchData();
+		fetchAuth();
+		initGui();
 	});
 
 	document.addEventListener('DOMContentLoaded', function() {
-		app.loadedModules.push('dom');
-		init();
+		app.loadedModules.push('DOMContentLoaded');
 	});
 
-	function init() {
-		document.getElementById('login-button').addEventListener('click', function(e) {
+	function fetchData() {
+		firebase.database().ref('live')
+			.once('value')
+			.then(function(snapshot){
+				app.data = snapshot.val();
+				app.loadedModules.push('data');
+				console.log('Live data fetched');
+			})
+			.catch(function(error){
+				app.loadedModules.push('data');
+				console.log('Live data not accessible');
+			});
+	}
+
+	function fetchAuth() {
+		firebase.auth().onAuthStateChanged(function(user, error) {
+			if(error) {
+				throw error;
+			}
+
+			if(user) {
+				firebase.database().ref('admins').child(user.uid)
+				.once('value')
+				.then(function(snapshot){
+					changeAuthState(snapshot.val() === true ? user : null);
+				});
+			}
+			else {
+				changeAuthState(null);
+			}
+		});
+	}
+
+	function changeAuthState(user) {
+		var isLoggedIn = app.isLoggedIn = !!user;
+		app.user = user;
+
+		var nav = document.querySelector('nav');
+
+		if (user) {
+			nav.classList.add('loud');
+			nav.classList.remove('silent');
+			document.querySelector('.logged-out').style.display = 'none';
+			document.querySelector('.logged-in').style.display = 'block';
+		} else {
+			nav.classList.remove('loud');
+			nav.classList.add('silent');
+			document.querySelector('.logged-out').style.display = 'block';
+			document.querySelector('.logged-in').style.display = 'none';
+		}
+	}
+
+
+	function initGui() {
+		document.querySelector('#login .logged-out a.button').addEventListener('click', function(e) {
 			e.preventDefault();
 			login();
 		});
-		document.getElementById('logout-button').addEventListener('click', function(e) {
+		document.querySelector('#login .logged-in a.button').addEventListener('click', function(e) {
 			e.preventDefault();
 			logout();
 		});
@@ -51,21 +84,9 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 
 	function login() {
 		var provider = new firebase.auth.GoogleAuthProvider();
-		firebase.auth().signInWithPopup(provider).then(function(result) {
-			// This gives you a Google Access Token. You can use it to access the Google API.
-			var token = result.credential.accessToken;
-			// The signed-in user info.
-			var user = result.user;
-			// ...
-		}).catch(function(error) {
-			// Handle Errors here.
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			// The email of the user's account used.
-			var email = error.email;
-			// The firebase.auth.AuthCredential type that was used.
-			var credential = error.credential;
-			// ...
+		firebase.auth().signInWithPopup(provider).catch(function(error) {
+			console.log('Unable to log');
+			throw error;
 		});
 	}
 
@@ -73,6 +94,84 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 		firebase.auth().signOut();
 	}
 
-})();
+	app.modules = {
+		rekni: function(body){
+			var player;
 
-app.loadedModules.push('app');
+			var init = function(){
+				initYoutubePlayer();
+			}
+
+			var initYoutubePlayer = function() {
+
+				//global callback
+				onYouTubeIframeAPIReady = function () {
+					app.loadedModules.push('youtube');
+				}
+
+				var tag = document.createElement('script');
+				tag.src = "https://www.youtube.com/iframe_api";
+				document.head.appendChild(tag);
+
+
+				app.loadedModules.registerCallback(['youtube', 'data'], function(){
+					if(app.data) {
+						showYoutubePlayer(app.data.videoId);
+					}
+				});
+			}
+
+			var showYoutubePlayer = function (videoId) {
+				body.querySelector('p').style.display = 'none';
+				var dimensions = getDimensions(1280,720);
+				player = new YT.Player('youtubePlayer', {
+					width: dimensions.width,
+					height: dimensions.height,
+					videoId: videoId,
+					events: {
+						//'onReady': onPlayerReady,
+						//'onStateChange': onPlayerStateChange
+					},
+					playerVars: {
+						autoplay: true,
+						enablejsapi: true,
+						hl: 'cs',
+						rel: false
+					}
+				});
+				window.addEventListener('resize', function() {
+					console.log("resize");
+					var dimensions = getDimensions(1280,720);
+					var playerEl = document.querySelector('#youtubePlayer');
+					playerEl.width = dimensions.width;
+					playerEl.height = dimensions.height;
+				});
+
+			}
+
+			var getDimensions = function (baseWidth, baseHeight) {
+				var width = Math.min(baseWidth, body.clientWidth);
+				var height = Math.min(baseHeight, body.clientHeight);
+				var requiredRatio = baseWidth / baseHeight;
+				var ratio = width / height;
+
+				if(ratio < requiredRatio) {
+					height = width / requiredRatio;
+				} else if(ratio > requiredRatio) {
+					width = height * requiredRatio;
+				}
+				return {
+					width: width,
+					height: height,
+				};
+			}
+
+			init();
+		},
+		kolarikovi: function(body){
+
+		}
+	};
+
+	app.loadedModules.push('app');
+})();

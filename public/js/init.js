@@ -20,8 +20,9 @@
 		var tryCallbacks = function() {
 			for(var i=callbacks.length-1;i>=0;i--) {
 				if(testConditions(callbacks[i].conditions)) {
-					callbacks[i].callback();
+					var cb = callbacks[i].callback;
 					callbacks.splice(i, 1);
+					setTimeout(cb, 0);
 				}
 			}
 		}
@@ -47,26 +48,25 @@
 
 		return registerCallback;
 	})();
+
+	app.loadedModules.registerCallback(['html', 'init'], chooseAppByUrl);
+	app.loadedModules.push('init');
 })();
 
 function chooseAppByUrl() {
-  var metric = location.hostname;
-  var path = location.pathname;
-  if(metric == 'localhost') {
-	metric = path;
-  }
-  if(metric.indexOf('www.tak-jim-to-rekni.cz') > -1) {
-	app.class = 'rekni';
-	app.body = document.getElementById('rekni');
-  }
-  else {
-	app.class = 'kolarikovi';
-	app.body = document.getElementById('kolarikovi');
-  }
-  app.body.style.display = 'flex';
+	var metric = location.hostname;
+	var path = location.pathname;
+	if(metric == 'localhost') {
+		metric = path;
+	}
+	if(metric.indexOf('www.tak-jim-to-rekni.cz') > -1) {
+		app.moduleName = 'rekni';
+		app.moduleBody = document.getElementById('rekni');
+	}
+	else {
+		app.moduleName = 'kolarikovi';
+		app.moduleBody = document.getElementById('kolarikovi');
+	}
+	app.moduleBody.style.display = 'flex';
+	app.loadedModules.push('app select');
 }
-
-app.loadedModules.registerCallback(['html', 'init'], chooseAppByUrl);
-
-app.loadedModules.push('init');
-
