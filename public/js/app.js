@@ -126,6 +126,10 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 			}
 
 			var showYoutubePlayer = function (videoId) {
+				//IE bug fix
+				if (!window.location.origin) {
+					window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+				}
 				var dimensions = getDimensions(1280,720);
 				player = new YT.Player('youtubePlayer', {
 					width: dimensions.width,
@@ -139,11 +143,11 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 						autoplay: true,
 						enablejsapi: true,
 						hl: 'cs',
+						origin: window.location.origin,
 						rel: false
 					}
 				});
 				window.addEventListener('resize', function() {
-					console.log("resize");
 					var dimensions = getDimensions(1280,720);
 					var playerEl = body.querySelector('#youtubePlayer');
 					playerEl.width = dimensions.width;
