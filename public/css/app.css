@@ -41,6 +41,7 @@ section {
 	display: none;
 	width: 100vw;
 	height: 100vh;
+	flex-direction: column;
 }
 
 section#rekni {
@@ -53,6 +54,7 @@ section#rekni {
 section#rekni p {
 	margin: 0;
 	padding: 0 15px;
+	text-align: center;
 }
 
 #youtubePlayer {
@@ -60,7 +62,8 @@ section#rekni p {
 }
 
 section.koldagroup {
-	justify-content: center;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .logobox {
@@ -68,6 +71,13 @@ section.koldagroup {
 	width: 400px;
 	height: 195px;
 	margin-top: 20px;
+	flex-shrink: 0;
+}
+
+@media (max-width: 400px) {
+	.logobox {
+		zoom: 80%
+	}
 }
 
 .logobox .text {
@@ -132,6 +142,53 @@ section.koldagroup {
 	left: 205px;
 	animation-delay: 2s;
 }
+
+section.koldagroup .logobox {
+	order: 1;
+}
+section.koldagroup p {
+	flex-shrink: 0;
+	order:4;
+	margin: 1em 50px;
+	text-align: center;
+	font-family: 'Roboto Condensed';
+	font-wieght: 400;
+	font-size: 1.2rem;
+}
+section.koldagroup p a {
+	color: #265774;
+}
+section.koldagroup .picture {
+	margin: 0 50px;
+	order:3;
+}
+@media (max-width: 1000px) {
+	section.koldagroup .logobox {
+	}
+	section.koldagroup p {
+		order:3;
+		margin: 1em 15px;
+	}
+	section.koldagroup .picture {
+		margin: 0 15px;
+		order:2;
+	}
+}
+
+section.koldagroup img {
+	max-width: 100%;
+	max-height: calc(100vh - 285px);
+}
+
+@media (max-height: 450px) {
+	.logobox {
+		zoom:70%
+	}
+	section.koldagroup img {
+		max-height: calc(100vh - 220px);
+	}
+}
+
 
 @-webkit-keyframes bounce-to {
 	0% {
