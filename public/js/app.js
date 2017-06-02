@@ -136,7 +136,7 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 					height: dimensions.height,
 					videoId: videoId,
 					events: {
-						onReady: function (){setTimeout(startPrefetching, 10000)},
+						onReady: onPlayerReady,
 						onStateChange: onPlayerStateChange
 					},
 					playerVars: {
@@ -155,11 +155,12 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 				});
 			}
 
+			var onPlayerReady = function(event) {
+				body.querySelector('p').style.display = 'none';
+				body.querySelector('#youtubePlayer').style.display = 'block';
+				setTimeout(startPrefetching, 50000);
+			}
 			var onPlayerStateChange = function(event) {
-				if(event.data === YT.PlayerState.PLAYING) {
-					body.querySelector('p').style.display = 'none';
-					body.querySelector('#youtubePlayer').style.display = 'block';
-				}
 				if(event.data === YT.PlayerState.ENDED) {
 					body.querySelector('p').style.display = 'block';
 					body.querySelector('#youtubePlayer').style.display = 'none';
@@ -191,6 +192,7 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 					'www.kolarikova.cz',
 				];
 				var urls = [
+					'https://www.kolarikovi.cz/',
 					'https://www.kolarikovi.cz/js/init.js',
 					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-app.js',
 					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-auth.js',
