@@ -32,6 +32,12 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 			});
 	}
 
+	function saveData(path, value) {
+		firebase.database().ref('live')
+			.child(path)
+			.set(value);
+	}
+
 	function fetchAuth() {
 		firebase.auth().onAuthStateChanged(function(user, error) {
 			if(error) {
@@ -100,6 +106,7 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 
 			var init = function(){
 				initYoutubePlayer();
+
 			}
 
 			var redirectToTarget = function() {
@@ -123,6 +130,22 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 						showYoutubePlayer(app.data.videoId);
 					}
 				});
+
+				app.loadedModules.registerCallback(['data'], function() {
+					document.querySelector('#video-panel').style.display = '';
+					document.querySelector('#video-id-save').addEventListener('click', function(e) {
+						saveVideoId();
+					});
+					if(app.data) {
+						document.querySelector('#video-id').value = app.data.videoId;
+					}
+				});
+			}
+
+			var saveVideoId = function() {
+				var id = document.querySelector('#video-id').value;
+				var button = document.querySelector('#video-id-save');
+				saveData('videoId', document.querySelector('#video-id').value);
 			}
 
 			var showYoutubePlayer = function (videoId) {

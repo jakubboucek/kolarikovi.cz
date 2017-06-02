@@ -10,10 +10,18 @@ body {
 	background-size: 50%;
 }
 
+nav {
+	font-size: 0.9rem;
+	font-family: Arial;
+	color:white;
+}
+
 nav.loud {
 	background-color: #555;
 	padding: 3px;
 	text-align: right;
+	position:absolute;
+	width: calc(100vw - 6px);
 }
 
 #login {
@@ -166,12 +174,10 @@ section.koldagroup .picture {
 	section.koldagroup .logobox {
 	}
 	section.koldagroup p {
-		order:3;
 		margin: 1em 15px;
 	}
 	section.koldagroup .picture {
 		margin: 0 15px;
-		order:2;
 	}
 }
 
@@ -181,8 +187,14 @@ section.koldagroup img {
 }
 
 @media (max-height: 450px) {
+	section.koldagroup {
+		justify-content: flex-start;
+	}
 	.logobox {
 		zoom:70%
+	}
+	section.koldagroup p {
+		order:2;
 	}
 	section.koldagroup img {
 		max-height: calc(100vh - 220px);
