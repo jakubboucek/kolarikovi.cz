@@ -243,7 +243,7 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 			init();
 		},
 		kolarikovi: function(body){
-
+			document.title="Kolaříkovi";
 		}
 	};
 
