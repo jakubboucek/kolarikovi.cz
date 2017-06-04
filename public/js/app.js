@@ -18,6 +18,12 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 		app.loadedModules.push('DOMContentLoaded');
 	});
 
+	app.loadedModules.registerCallback(['DOMContentLoaded'], function(){
+		if(location.search.match(/[?&]_ga=/)) {
+			history.replaceState({}, document.title, location.href.replace(/(\?)?&?_ga=[^&]+/, '$1'));
+		}
+	});
+
 	function fetchData() {
 		firebase.database().ref('live')
 			.once('value')
@@ -110,7 +116,12 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 			}
 
 			var redirectToTarget = function() {
-				location.href = 'https://www.kolarikovi.cz/';
+				var url = 'https://www.kolarikovi.cz/';
+				var linkerParam = window.ga && window.ga.getAll ? window.ga.getAll()[0].get('linkerParam') : '';
+				if(linkerParam) {
+					url += '?' + linkerParam;
+				}
+				location.href = url;
 			}
 
 			var initYoutubePlayer = function() {
