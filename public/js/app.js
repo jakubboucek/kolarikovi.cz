@@ -228,10 +228,12 @@ Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').instal
 				var urls = [
 					'https://www.kolarikovi.cz/',
 					'https://www.kolarikovi.cz/js/init.js',
-					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-app.js',
-					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-auth.js',
-					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-database.js',
-					'https://www.kolarikovi.cz/__/firebase/4.0.0/firebase-storage.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-app.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-auth.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-database.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-firestore.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-storage.js',
+					'https://www.kolarikovi.cz/__/firebase/4.6.2/firebase-storage.js',
 					'https://www.kolarikovi.cz/__/firebase/init.js',
 					'https://www.kolarikovi.cz/js/app.js',
 					'https://www.kolarikovi.cz/css/app.css'
