@@ -1,0 +1,22 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+# E-mail
+Contact: mailto:pan@jakubboucek.cz
+
+# My private OpenPGP key - be secure, encrypt your message
+Encryption: https://www.jakub-boucek.cz/keys/jakub-boucek-pgp.asc.txt
+Encryption: https://keybase.io/jakubboucek/pgp_keys.asc
+# tip: use this tool to secure message encrypt: https://keybase.io/encrypt#jakubboucek
+
+# Please speak English ~~ a nebo mi napište Česky
+Preferred-Languages: cs, en
+Acknowledgements: https://www.jakub-boucek.cz/.well-known/security-acknowledgements.txt
+OpenBugBounty: https://openbugbounty.org/bugbounty/JakubBoucek/
+-----BEGIN PGP SIGNATURE-----
+
+iHUEAREKAB0WIQTO9r3W4mXrlJ9beRrI8be4WVvGzgUCXZpR1wAKCRDI8be4WVvG
+zutGAQCUbpZcs3OJKX2e0EC+32TcxKpWkUoaxSBpDbhnFAAWvQD/QIyVLcVLWWbd
+lJ7L8x6//kjrtkO6bSWnJuNF8TA/erQ=
+=k56C
+-----END PGP SIGNATURE-----
