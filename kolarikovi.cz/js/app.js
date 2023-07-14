@@ -1,5 +1,3 @@
-Raven.config('https://77f183656b4847289abc39143c2bbd10@sentry.io/173401').install();
-
 (function(){
 	app.data = null;
 	app.module = null;
