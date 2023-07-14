@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "kolarikovi-cz"
-  }
+  },
+  "targets": {
+    "kolarikovi-cz": {
+      "hosting": {
+        "kolarikovi-cz": [
+          "kolarikovi-cz"
+        ],
+        "kolarikova-cz": [
+          "kolarikova-cz"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
