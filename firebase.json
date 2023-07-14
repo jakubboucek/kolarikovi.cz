@@ -17,12 +17,6 @@
           "destination": "https://docs.google.com/document/d/1X_AYkSgPocdm3w0IlAg80c7Ve4yCQm0onJAvPGWeS2I/view",
           "type": 302
         }
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
       ]
     },
     {
